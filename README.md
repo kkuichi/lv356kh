@@ -26,7 +26,8 @@ Hybridná neurónová sieť **Conv1D-BiLSTM**:
 
 - **Zdroj:** dáta SABER úrovne 2A
 - **Formát:** NetCDF (.nc)
-- **Použité obdobie:** mesiac Január z rokov 2021-2025
+- **Použité obdobie:** mesiac Január z rokov 2022-2025
+
 Z dôvodu veľkosti jednotlivých súborov je potrebné si stiahnuť dáta zo [SABER-a](https://saber.gats-inc.com/custom.php)
 prihlásením sa do custom toolu a následného vybrania mesiaca a dní mesiaca Január. V dolnej časti sú štyri dropdown menu, kde je potrebné si vybrať premenné ktemp a H2O.
 Stiahnuté `.nc` súbory umiestnite do priečinka `data/`.
