@@ -28,7 +28,7 @@ Hybridná neurónová sieť **Conv1D-BiLSTM**:
 - **Formát:** NetCDF (.nc)
 - **Použité obdobie:** mesiac Január z rokov 2021-2025
 Z dôvodu veľkosti jednotlivých súborov je potrebné si stiahnuť dáta zo [SABER-a](https://saber.gats-inc.com/custom.php)
-prihlásením sa do custom toolu a následného vybrania mesiaca a dní. V dolnej časti sú štyri dropdown menu, kde je potrebné si vybrať premenné ktemp a H2O.
+prihlásením sa do custom toolu a následného vybrania mesiaca a dní mesiaca Január. V dolnej časti sú štyri dropdown menu, kde je potrebné si vybrať premenné ktemp a H2O.
 Stiahnuté `.nc` súbory umiestnite do priečinka `data/`.
 
 ## Štruktúra projektu
@@ -122,8 +122,6 @@ Modely sú vyhodnocované pomocou:
 - **MAE** (stredná absolútna chyba) vo fyzikálnych jednotkách (K alebo ppmv)
 - **MAPE** (stredná absolútna percentuálna chyba) v %
 - Vizuálne porovnanie predikovaného vertikálneho profilu s najbližším reálnym eventom z testovacej množiny
-
-Najbližší reálny event sa hľadá pomocou euklidovskej vzdialenosti od zadaných súradníc. Každý event pred rozdelením dát obsahuje 394 výškových hladín.
 
 ## Poznámka
 
