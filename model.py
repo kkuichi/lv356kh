@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 import pickle
 import time
 from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.layers import Dense, Dropout, Conv1D, LSTM, Bidirectional
 
 
