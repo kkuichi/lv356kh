@@ -1,6 +1,6 @@
 # Predikcia atmosférických vertikálnych profilov vybraných veličín rádiometra SABER
 
-Predikčný model na odhadovanie atmosférických vertikálnych profilov teploty a koncentrácie vodnej pary pomocou hybridnej hlbokej neurónovej siete Conv1D-BiLSTM trénovanej na meraniach satelitu SABER.
+Predikčný model na odhadovanie atmosférických vertikálnych profilov teploty a koncentrácie vodnej pary pomocou hybridnej architektúry Conv1D-BiLSTM trénovanej na meraniach satelitu SABER.
 
 ## Prehľad
 
@@ -28,17 +28,17 @@ Hybridná neurónová sieť **Conv1D-BiLSTM**:
 - **Formát:** NetCDF (.nc)
 - **Použité obdobie:** mesiac Január z rokov 2022-2025
 
-Z dôvodu veľkosti jednotlivých súborov je potrebné si stiahnuť dáta zo [SABER-a](https://saber.gats-inc.com/custom.php)
-prihlásením sa do custom toolu a následného vybrania mesiaca a dní mesiaca Január. V dolnej časti sú štyri dropdown menu, kde je potrebné si vybrať premenné ktemp a H2O.
-Stiahnuté `.nc` súbory umiestnite do priečinka `data/`.
+Z dôvodu veľkosti jednotlivých súborov ich nebolo možné vložiť do priečinka a je potrebné si ich stiahnuť zo [SABER-a](https://saber.gats-inc.com/custom.php)
+registrovaním a následným prihlásením sa do custom toolu. Potom je potrebné si vybrať rok, mesiac január a dni, z ktorých chceme merania. V dolnej časti sú štyri dropdown menu, kde je potrebné si vybrať premenné ktemp a H2O. V prípade potreby sa dajú určiť intervaly zemepisnej šírky, dĺžky a nadmorskej výšky. Po určitom čase custom data tool vygeneruje súbor, ktorý je potrebné stiahnuť.
+Stiahnutý `.nc` súbor umiestnite do priečinka `/data/`.
 
 ## Štruktúra projektu
 
 ```
-├── model.py        # Hlavný skript
-├── data/           # Vstupné NetCDF súbory
-├── training_data/  # Uložený model, história trénovania a scalery
-└── README.md
+├── data/ # NetCDF súbory
+├── training_data/ # Uložený model, história trénovania a scalery
+├── README.md/ # Návod na použitie
+└── model.py # Hlavný skript
 ```
 
 ## Inštalácia
@@ -64,7 +64,7 @@ Po zapnutí zadajte:
 - Zemepisnú dĺžku
 - Čas v hodinách, minútach, sekundách
 
-## Postup behu skriptu
+## Priebej kódu
 
 1. Načítanie dát zo všetkých `.nc` súborov v priečinku `data/`
 2. Zadanie vstupných hodnôt používateľom
@@ -126,4 +126,4 @@ Modely sú vyhodnocované pomocou:
 
 ## Poznámka
 
-Medzi trénovaním ktemp a H2O modelu je zaradená 10-minútová pauza (`time.sleep(600)`) z dôvodu tepelného zaťaženia CPU. Ak sa oba modely spúšťaju s dostatočným časovým odstupom, pauzu môžete odstrániť.
+Medzi trénovaním ktemp a H2O modelu je 10 minútová pauza (`time.sleep(600)`). Na slabších systémoch môže dojsť ku prehrievaniu CPU alebo GPU. Ak sa oba modely spúšťaju s dostatočným časovým odstupom, pauzu môžete odstrániť.
