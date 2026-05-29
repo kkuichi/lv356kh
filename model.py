@@ -55,8 +55,7 @@ def preprocess_data(df, target_lat, target_lon):
     if df_filtered.empty:
         raise ValueError(f"Žiadne dáta pre šírku={target_lat} a dĺžku={target_lon}")
 
-    print(f"Počet záznamov: {len(df_filtered):,} "
-          f"z celkových {len(df):,}")
+    print(f"Počet záznamov po vyčistení: {len(df_filtered):,}")
 
     return df_filtered
 
@@ -111,7 +110,7 @@ def prepare_inputs(df_filtered, target_value):
 def closest_event(X_test_real, y_test, idx_test, target_lat, target_lon):
     """
     V testovacej množine sa nájde event, ktorého priemerná geografická
-    poloha je najbližšia k zadanej polohe kde Každý event obsahuje 394 výškových hladín.
+    poloha je najbližšia k zadanej polohe kde každý event obsahuje 394 výškových hladín.
     Argumenty:
         X_test_real : reálne hodnoty vstupov testovacej množiny
         y_test : reálne hodnoty výstupu testovacej množiny
@@ -129,7 +128,7 @@ def closest_event(X_test_real, y_test, idx_test, target_lat, target_lon):
     # Odvodíme eventu z pôvodného indexu
     event_ids_test = idx_test // 394
 
-    # Vzdialenosť každého riadku od zadanej polohy
+    # Vzdialenosť každého záznamu od zadanej polohy
     dist = np.sqrt(
         (X_test_real[:, 0] - target_lat) ** 2 +
         (X_test_real[:, 1] - target_lon) ** 2
@@ -201,8 +200,8 @@ def generate_plot(history_ktemp, history_h2o,
     Vykreslí 4 grafy:
         [0,0] Vertikálny profil teploty pre najbližší event vs. predikcia modelu
         [0,1] Vertikálny profil koncentrácie vodnej pary pre najbližší event vs. predikcia modelu
-        [1,0] Tréningová krivka teploty pre MSE stratu počas trénovania
-        [1,1] Tréningová krivka koncentrácie vodnej pary pre MSE stratu počas trénovania
+        [1,0] Tréningová krivka teploty pre trénovaciu a validačnú stratu
+        [1,1] Tréningová krivka koncentrácie vodnej pary pre trénovaciu a validačnú stratu
     """
     fig, axes = plt.subplots(2, 2, figsize=(14, 12))
 
@@ -254,7 +253,7 @@ def generate_plot(history_ktemp, history_h2o,
 
 if __name__ == "__main__":
 
-    DATA_FOLDER = './data/'
+    DATA_FOLDER = './data_skuska/'
     ALT_LEVELS  = 72    # počet výškových hladín pre predikované profily
     EPOCHS      = 50
     BATCH_SIZE  = 512
@@ -270,13 +269,13 @@ if __name__ == "__main__":
         user_minutes = int(input("Zadaj minúty   (0–59): "))
         user_seconds = int(input("Zadaj sekundy  (0–59): "))
 
-        # Čas prevedený na milisekundy od polnoci
+        # Prevedenie času na milisekundy od polnoci
         user_time = (user_hours * 3600 + user_minutes * 60 + user_seconds) * 1000
 
     except ValueError:
         user_lat, user_lon, user_time = 50.0, 40.0, 0
 
-    # Získanie vyfiltrovaného datasetu
+    # Získanie vyčisteného datasetu
     df_filtered = preprocess_data(df, user_lat, user_lon)
     ALT_MIN = df_filtered['tpaltitude'].min()
     ALT_MAX = df_filtered['tpaltitude'].max()
@@ -296,7 +295,7 @@ if __name__ == "__main__":
 
     X_train_seq, X_test_seq, y_train, y_test, scaler_x_ktemp, scaler_y_ktemp, X_test_scaled, idx_test = prepare_inputs(df_filtered, 'ktemp')
 
-    # Ak existuje uložený model, načíta sa
+    # Ak existuje uložený model tak sa načíta
     if ((TRAIN_DATA / 'model_ktemp.keras').exists() and
         (TRAIN_DATA / 'history_ktemp.pkl').exists() and
         (TRAIN_DATA / 'scaler_x_ktemp.pkl').exists() and
@@ -307,7 +306,7 @@ if __name__ == "__main__":
             data_ktemp = pickle.load(f)
         with open(TRAIN_DATA / 'scaler_x_ktemp.pkl', 'rb') as f:
             scaler_x_ktemp = pickle.load(f)
-        with open(TRAIN_DATA / 'scaler_ktemp_y.pkl', 'rb') as f:
+        with open(TRAIN_DATA / 'scaler_y_ktemp.pkl', 'rb') as f:
             scaler_y_ktemp = pickle.load(f)
 
     else:
@@ -332,7 +331,7 @@ if __name__ == "__main__":
             pickle.dump(scaler_y_ktemp, f)
         
 
-    # Inverzná transformácia predikcií späť na K
+    # Transformácia predikcií späť na K pre vyhodnotenie
     y_test_ktemp = scaler_y_ktemp.inverse_transform(y_test)
     y_pred_ktemp = scaler_y_ktemp.inverse_transform(model_ktemp.predict(X_test_seq))
 
@@ -352,7 +351,7 @@ if __name__ == "__main__":
 
     time.sleep(600)
 
-    print("\nTréning koncentrácie vodnej pary")
+    print("\nTréning vodnej pary")
 
     X_train_seq, X_test_seq, y_train, y_test, scaler_x_h2o, scaler_y_h2o, X_test_scaled, idx_test = prepare_inputs(df_filtered, 'H2O')
 
@@ -391,7 +390,7 @@ if __name__ == "__main__":
             pickle.dump(scaler_y_h2o, f)
         
 
-    # Transformácia späť na ppmv
+    # Transformácia predikcií späť na ppmv
     y_test_h2o = scaler_y_h2o.inverse_transform(y_test)
     y_pred_h2o = scaler_y_h2o.inverse_transform(model_h2o.predict(X_test_seq))
 
